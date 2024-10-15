@@ -1,0 +1,11 @@
+# CONFIG_SITE.Common.oe-fsl-linux-ppc64e6500
+# Open Embedded FSL Linux for ppc64e6500
+# Site-specific information
+
+# Define the following variables for you build
+## Toolchain root
+OE_TOOL_ROOT ?= /opt/ifc14xx
+## Toolchain version
+OE_TOOL_VER ?= 182333
+## Or directly the systemroots
+###[default] OE_SYS_ROOTS ?= $(OE_TOOL_ROOT)/$(OE_TOOL_VER)/sysroots
