@@ -5,6 +5,7 @@
 #-------------------------------------------------------
 
 # Include definitions common to all oe-fsl-linux-ppc64e6500 archs
+-include $(CONFIG)/os/CONFIG_SITE.Common.oe-fsl-linux-ppc64e6500
 include $(CONFIG)/os/CONFIG.Common.oe-fsl-linux-ppc64e6500
 
 CROSS_OPT = NO
