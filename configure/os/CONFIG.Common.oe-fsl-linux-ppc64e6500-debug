@@ -1,0 +1,10 @@
+# CONFIG.Common.oe-fsl-linux-ppc64e6500-debug
+#
+# Definitions for oe-fsl-linux-ppc64e6500-debug target archs
+# Sites may override these definitions in CONFIG_SITE.Common.oe-fsl-linux-ppc64e6500-debug
+#-------------------------------------------------------
+
+# Include definitions common to all oe-fsl-linux-ppc64e6500 archs
+include $(CONFIG)/os/CONFIG.Common.oe-fsl-linux-ppc64e6500
+
+CROSS_OPT = NO
