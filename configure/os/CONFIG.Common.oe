@@ -24,7 +24,7 @@ OE_TOOL_NAME := $(word 1, $(subst -, ,$(subst oe-,,$(T_A))))
 # OE Target OS
 OE_TG_OS := $(word 2, $(subst -, ,$(subst oe-,,$(T_A))))
 # OE Target Architecture
-OE_TG_ARCH := $(subst $(OE_TG_OS)-,,$(subst $(OE_TOOL_NAME)-,,$(subst oe-,,$(T_A))))
+OE_TG_ARCH := $(subst -debug,,$(subst $(OE_TG_OS)-,,$(subst $(OE_TOOL_NAME)-,,$(subst oe-,,$(T_A)))))
 
 COMMANDLINE_LIBRARY ?= READLINE
 

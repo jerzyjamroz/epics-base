@@ -1,0 +1,10 @@
+# CONFIG.Common.oe-poky-linux-corei7-64-debug
+#
+# Definitions for oe-poky-linux-corei7-64-debug target archs
+# Sites may override these definitions in CONFIG_SITE.Common.oe-poky-linux-corei7-64-debug
+#-------------------------------------------------------
+
+# Include definitions common to all oe-poky-linux-corei7-64 archs
+include $(CONFIG)/os/CONFIG.Common.oe-poky-linux-corei7-64
+
+CROSS_OPT = NO
