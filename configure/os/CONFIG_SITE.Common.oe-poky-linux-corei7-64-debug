@@ -1,0 +1,11 @@
+# CONFIG_SITE.Common.oe-poky-linux-corei7-64-debug
+# Open Embedded Poky Linux for Core i7 64
+# Site-specific information
+
+# Define the following variables for you build
+## Toolchain root
+OE_TOOL_ROOT ?= /opt/cct
+## Toolchain version
+OE_TOOL_VER ?= 182333
+## Or directly the systemroots
+###[default] OE_SYS_ROOTS ?= $(OE_TOOL_ROOT)/$(OE_TOOL_VER)/sysroots
