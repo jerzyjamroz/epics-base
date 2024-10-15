@@ -1,0 +1,84 @@
+# This file contains definitions for Open Embedded builds
+#
+#   author  : Jeong Han Lee
+#   email   : jeonghan.lee@gmail.com
+#   date    : Wednesday, May  8 18:32:56 CEST 2019
+#--------------------------------------------------------------------
+#   update	: Joao Paulo Martins
+#						: Jerzy Jamroz
+#		date		: 13.10.2024
+#--------------------------------------------------------------------
+#  Sites may override definitions in os/CONFIG_SITE.Common.oe
+#--------------------------------------------------------------------
+# Define the following variables:
+## OE_TOOL_ROOT - toolchain root directory
+## OE_TOOL_VER - toolchain version
+
+unexport GCC_EXEC_PREFIX
+
+OE_SYS_ROOTS ?= $(OE_TOOL_ROOT)/$(OE_TOOL_VER)/sysroots
+
+# The parsing requires: oe-<toochain_name>-<target_os>-<target_architecture>
+# OE Toolchain Name
+OE_TOOL_NAME := $(word 1, $(subst -, ,$(subst oe-,,$(T_A))))
+# OE Target OS
+OE_TG_OS := $(word 2, $(subst -, ,$(subst oe-,,$(T_A))))
+# OE Target Architecture
+OE_TG_ARCH := $(subst $(OE_TG_OS)-,,$(subst $(OE_TOOL_NAME)-,,$(subst oe-,,$(T_A))))
+
+COMMANDLINE_LIBRARY ?= READLINE
+
+SDKTARGETSYSROOT ?= $(OE_SYS_ROOTS)/$(OE_TG_ARCH)-$(OE_TOOL_NAME)-$(OE_TG_OS)
+
+OE_ALL_FLAGS += --sysroot=$(SDKTARGETSYSROOT)
+
+ARCH_DEP_CFLAGS   += $(OE_ALL_FLAGS)
+ARCH_DEP_CFLAGS   += -pipe -feliminate-unused-debug-types
+
+ARCH_DEP_CPPFLAGS += $(OE_ALL_FLAGS)
+
+ARCH_DEP_CXXFLAGS += $(OE_ALL_FLAGS)
+ARCH_DEP_CXXFLAGS += -pipe -feliminate-unused-debug-types
+ARCH_DEP_CXXFLAGS += -std=c++17
+
+ARCH_DEP_LDFLAGS  += --sysroot=$(SDKTARGETSYSROOT)
+ARCH_DEP_LDFLAGS  += -Wl,-O1
+ARCH_DEP_LDFLAGS  += -Wl,--hash-style=gnu
+ARCH_DEP_LDFLAGS  += -Wl,--as-needed
+
+OECORE_NATIVE ?= x86_64-$(OE_TOOL_NAME)sdk-$(OE_TG_OS)
+
+# The default gnu architecture
+GNU_ARCH ?= x86_64
+
+# GNU_TARGET and GNU_DIR required
+# EPICS GNU_DIR is the same as
+#
+GNU_DIR = $(OE_SYS_ROOTS)/$(OECORE_NATIVE)/usr
+
+# If your crosscompiler name has a GNU target prefix like <gnutarget>-gcc,
+# e.g. *-gcc, put a GNU_TARGET definition in
+# EPICS Variable GNU_TARGET
+# is the same as TARGET_PREFIX in environment-setup*-linux
+# except the suffix "-"
+GNU_TARGET ?= $(GNU_ARCH)-$(OE_TOOL_NAME)-$(OE_TG_OS)
+
+# GNU_BIN is defined in CONFIG.gnuCommon as follows:
+# GNU_BIN = $(GNU_DIR)/bin
+# However, toolchain has the GNU_TARGET after bin
+GNU_BIN = $(GNU_DIR)/bin/$(GNU_TARGET)
+
+# Managed by CONFIG.CrossCommon GNU_TARGET_INCLUDE_DIR = -I$(GNU_DIR)/include
+## CROSS_INCLUDES =
+
+# GNU_GARGET_LIB_DIR is defined in CONFIG.CrossCommon as follows:
+# GNU_TARGET_LIB_DIR = $(GNU_TARGET:%= $(GNU_DIR)/%/lib)
+# However, the toolchain han no GNU_TARGET after lib
+#
+GNU_TARGET_LIB_DIR = $(GNU_DIR)/lib
+
+PYTHONHOME ?= $(SDKTARGETSYSROOT)/usr
+
+# Allow site overrides
+-include $(CONFIG)/os/CONFIG_SITE.Common.oe
+-include $(CONFIG)/os/CONFIG_SITE.$(EPICS_HOST_ARCH).oe

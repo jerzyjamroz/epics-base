@@ -1,0 +1,14 @@
+# CONFIG.Common.oe-fsl-linux-ppc64e6500
+# Author: Jerzy Jamroz
+#
+# All OE targets use the same Makefile fragment
+#
+
+include $(CONFIG)/os/CONFIG.Common.linux-ppc64
+
+OE_ALL_FLAGS += -mhard-float -mcpu=e6500
+
+# [TODO] To check if it is correct
+GNU_ARCH = powerpc64
+
+include $(CONFIG)/os/CONFIG.Common.oe
