@@ -1,0 +1,13 @@
+# Definitions for linux-x86_64 host - x86_64_i7avx2-poky-linux target builds
+# Override these settings in CONFIG_SITE.x86_64_i7avx2-poky-linux
+
+# Include common open embedded compiler definitions
+include $(CONFIG)/CONFIG.oeCommon
+include $(CONFIG)/os/CONFIG.linux-x86_64.x86_64-poky-linux
+-include $(CONFIG)/os/CONFIG_SITE.linux-x86_64.x86_64-poky-linux
+
+# Define GNU_TARGET if T_A not equal
+GNU_TARGET = x86_64-poky-linux
+
+#Targets the Haswell (or later) Intel i7 processors with avx2
+ARCH_DEP_COMMONFLAGS += -march=core-avx2 -mtune=core-avx2 -O3 -mavx2 -mfma -funroll-loops -ffast-math -flto -falign-functions=32 -fopenmp

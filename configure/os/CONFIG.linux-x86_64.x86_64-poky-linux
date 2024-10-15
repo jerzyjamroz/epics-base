@@ -1,0 +1,12 @@
+# Definitions for linux-x86_64 host - x86_64-poky-linux target builds
+# Override these settings in CONFIG_SITE.linux-x86.x86_64-poky-linux
+
+include $(CONFIG)/os/CONFIG.Common.linux-x86_64
+# Include common open embedded compiler definitions
+include $(CONFIG)/CONFIG.oeCommon
+
+# -mfpmath=sse
+# enables use of XMM registers in floating point instructions (instead of stack in x87 mode)
+#
+
+ARCH_DEP_COMMONFLAGS += -mtune=generic -mfpmath=sse

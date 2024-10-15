@@ -1,0 +1,7 @@
+# CONFIG_SITE.linux-x86_64.x86_64-poky-linux
+# Open Embedded Poky Linux for x86_64
+# Site-specific information
+
+# Define the following variables for you build
+OECORE_NATIVE_SYSROOT ?= /opt/cct/182333/sysroots/x86_64-pokysdk-linux
+OECORE_TARGET_SYSROOT ?= /opt/cct/182333/sysroots/corei7-64-poky-linux
