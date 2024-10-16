@@ -1,5 +1,5 @@
-# CONFIG_SITE.Common.oe-poky-linux-corei7-64
-# Open Embedded Poky Linux for Core i7 64
+# CONFIG_SITE.linux-x86_64.x86_64-poky-linux
+# Open Embedded Poky Linux for x86_64
 # Site-specific information
 
 # Define the following variables for you build

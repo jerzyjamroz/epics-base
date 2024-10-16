@@ -6,4 +6,3 @@
 
 # Include common gnu compiler definitions
 include $(CONFIG)/os/CONFIG.linux-x86.linux-x86
-
