@@ -19,5 +19,3 @@ include $(CONFIG)/os/CONFIG.Common.linux-x86_64
 # Check export CC="" after *-gcc, the all flags should be TOOLCHAIN_CFLAG, which can be used
 # in ARCH_DEP_CPPFLAGS, ARCH_DEP_CFLAGS, ARCH_DEP_CXXFLAGS, ARCH_DEP_LDFLAGS
 OE_ALL_FLAGS += -march=nehalem -mtune=generic -mfpmath=sse -msse4.2
-
-include $(CONFIG)/os/CONFIG.Common.oe
