@@ -1,0 +1,8 @@
+# Definitions for linux-x86_64 host - powerpc64-fsl-linux target builds
+# Override these settings in CONFIG_SITE.linux-x86.powerpc64-fsl-linux
+
+include $(CONFIG)/os/CONFIG.Common.linux-ppc64
+# Include common open embedded compiler definitions
+include $(CONFIG)/CONFIG.oeCommon
+
+ARCH_DEP_COMMONFLAGS += -mhard-float -mcpu=e6500

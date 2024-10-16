@@ -1,14 +1,9 @@
-# This file contains definitions for Open Embedded builds
-#
-#   author  : Jeong Han Lee
-#   email   : jeonghan.lee@gmail.com
-#   date    : Wednesday, May  8 18:32:56 CEST 2019
+# Open Embedded default definitions
 #--------------------------------------------------------------------
+#   author  : Jeong Han Lee
 #   update	: Joao Paulo Martins
 #						: Jerzy Jamroz
 #		date		: 13.10.2024
-#--------------------------------------------------------------------
-#  Sites may override definitions in os/CONFIG_SITE.Common.oe
 #--------------------------------------------------------------------
 # Define the following variables:
 ## OECORE_TARGET_SYSROOT - Toolchain
@@ -63,5 +58,5 @@ OECORE_TARGET_PYTHONHOME ?= $(OECORE_TARGET_SYSROOT)/usr/bin
 OECORE_NATIVE_PYTHONHOME ?= $(OECORE_NATIVE_SYSROOT)/usr/bin
 
 # Allow site overrides
--include $(CONFIG)/os/CONFIG_SITE.Common.oe
--include $(CONFIG)/os/CONFIG_SITE.$(EPICS_HOST_ARCH).oe
+-include $(CONFIG)/CONFIG_SITE.oeCommon
+-include $(CONFIG)/CONFIG_SITE.oeCommon.local

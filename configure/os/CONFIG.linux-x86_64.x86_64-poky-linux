@@ -1,10 +1,9 @@
-# CONFIG.Common.oe-poky-linux-corei7-64
-# Author: Jerzy Jamroz
-#
-# All OE targets use the same Makefile fragment
-#
+# Definitions for linux-x86_64 host - x86_64-poky-linux target builds
+# Override these settings in CONFIG_SITE.linux-x86.x86_64-poky-linux
 
 include $(CONFIG)/os/CONFIG.Common.linux-x86_64
+# Include common open embedded compiler definitions
+include $(CONFIG)/CONFIG.oeCommon
 
 # -mfpmath=sse
 # enables use of XMM registers in floating point instructions (instead of stack in x87 mode)
@@ -17,6 +16,4 @@ include $(CONFIG)/os/CONFIG.Common.linux-x86_64
 # Check export CC="" after *-gcc, the all flags should be TOOLCHAIN_CFLAG, which can be used
 # in ARCH_DEP_CPPFLAGS, ARCH_DEP_CFLAGS, ARCH_DEP_CXXFLAGS, ARCH_DEP_LDFLAGS
 
-ARCH_DEP_COMMONFLAGS += -march=nehalem -mtune=generic -mfpmath=sse -msse4.2
-
-include $(CONFIG)/os/CONFIG.Common.oeCommon
+ARCH_DEP_COMMONFLAGS += -mtune=generic -mfpmath=sse -march=nehalem -msse4.2

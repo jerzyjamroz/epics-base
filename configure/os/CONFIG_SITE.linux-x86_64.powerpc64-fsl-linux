@@ -1,0 +1,6 @@
+# CONFIG_SITE.linux-x86_64.powerpc64-fsl-linux
+# Site-specific information
+
+# Define the following variables for you build
+OECORE_NATIVE_SYSROOT ?= /opt/ifc14xx/182333/sysroots/x86_64-fslsdk-linux
+OECORE_TARGET_SYSROOT ?= /opt/ifc14xx/182333/sysroots/ppc64e6500-fsl-linux

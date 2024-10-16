@@ -1,7 +1,0 @@
-# CONFIG_SITE.Common.oe-fsl-linux-ppc64e6500
-# Open Embedded FSL Linux for ppc64e6500
-# Site-specific information
-
-# Define the following variables for you build
-OE_SDKTOOL_HOME ?= /opt/ifc14xx/182333/sysroots/x86_64-fslsdk-linux/usr
-OE_TOOL_HOME ?= /opt/ifc14xx/182333/sysroots/ppc64e6500-fsl-linux/usr
