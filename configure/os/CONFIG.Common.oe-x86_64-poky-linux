@@ -6,9 +6,6 @@
 
 include $(CONFIG)/os/CONFIG.Common.linux-x86_64
 
-# Open Embedded Poky Linux for Core i7 64
-OE_TOOL_ARCH = x86_64
-
 # -mfpmath=sse
 # enables use of XMM registers in floating point instructions (instead of stack in x87 mode)
 #

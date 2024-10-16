@@ -3,5 +3,5 @@
 # Site-specific information
 
 # Define the following variables for you build
-OE_SDKTOOL_HOME ?= /opt/cct/182333/sysroots/x86_64-pokysdk-linux/usr
-OE_TOOL_HOME ?= /opt/cct/182333/sysroots/corei7-64-poky-linux/usr
+OECORE_NATIVE_SYSROOT ?= /opt/cct/182333/sysroots/x86_64-pokysdk-linux
+OECORE_TARGET_SYSROOT ?= /opt/cct/182333/sysroots/corei7-64-poky-linux
