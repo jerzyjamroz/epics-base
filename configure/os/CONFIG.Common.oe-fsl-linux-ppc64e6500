@@ -6,7 +6,6 @@
 
 include $(CONFIG)/os/CONFIG.Common.linux-ppc64
 
-OE_ALL_FLAGS += -mhard-float -mcpu=e6500
+ARCH_CLASS = powerpc64
 
-# [TODO] To check if it is correct
-GNU_ARCH = powerpc64
+ARCH_DEP_COMMONFLAGS += -mhard-float -mcpu=e6500
