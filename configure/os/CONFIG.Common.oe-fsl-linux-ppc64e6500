@@ -10,5 +10,3 @@ OE_ALL_FLAGS += -mhard-float -mcpu=e6500
 
 # [TODO] To check if it is correct
 GNU_ARCH = powerpc64
-
-include $(CONFIG)/os/CONFIG.Common.oe

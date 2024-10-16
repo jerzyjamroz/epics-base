@@ -1,0 +1,2 @@
+
+OECORE_NATIVE = x86_64-$(OE_TOOL_NAME)sdk-$(OE_TG_OS)

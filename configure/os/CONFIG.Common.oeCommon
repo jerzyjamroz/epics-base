@@ -46,7 +46,7 @@ ARCH_DEP_LDFLAGS  += -Wl,-O1
 ARCH_DEP_LDFLAGS  += -Wl,--hash-style=gnu
 ARCH_DEP_LDFLAGS  += -Wl,--as-needed
 
-OECORE_NATIVE ?= x86_64-$(OE_TOOL_NAME)sdk-$(OE_TG_OS)
+#####OECORE_NATIVE ?= x86_64-$(OE_TOOL_NAME)sdk-$(OE_TG_OS)
 
 # The default gnu architecture
 GNU_ARCH ?= x86_64
