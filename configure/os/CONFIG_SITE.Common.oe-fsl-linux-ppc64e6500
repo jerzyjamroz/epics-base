@@ -3,9 +3,5 @@
 # Site-specific information
 
 # Define the following variables for you build
-## Toolchain root
-OE_TOOL_ROOT ?= /opt/ifc14xx
-## Toolchain version
-OE_TOOL_VER ?= 182333
-## Or directly the systemroots
-###[default] OE_SYS_ROOTS ?= $(OE_TOOL_ROOT)/$(OE_TOOL_VER)/sysroots
+OE_SDKTOOL_HOME ?= /opt/ifc14xx/182333/sysroots/x86_64-fslsdk-linux/usr
+OE_TOOL_HOME ?= /opt/ifc14xx/182333/sysroots/ppc64e6500-fsl-linux/usr
