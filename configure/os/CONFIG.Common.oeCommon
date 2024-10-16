@@ -30,14 +30,14 @@ COMMANDLINE_LIBRARY ?= READLINE
 
 SDKTARGETSYSROOT ?= $(OE_SYS_ROOTS)/$(OE_TG_ARCH)-$(OE_TOOL_NAME)-$(OE_TG_OS)
 
-OE_ALL_FLAGS += --sysroot=$(SDKTARGETSYSROOT)
+ARCH_DEP_COMMONFLAGS += --sysroot=$(SDKTARGETSYSROOT)
 
-ARCH_DEP_CFLAGS   += $(OE_ALL_FLAGS)
+ARCH_DEP_CFLAGS   += $(ARCH_DEP_COMMONFLAGS)
 ARCH_DEP_CFLAGS   += -pipe -feliminate-unused-debug-types
 
-ARCH_DEP_CPPFLAGS += $(OE_ALL_FLAGS)
+ARCH_DEP_CPPFLAGS += $(ARCH_DEP_COMMONFLAGS)
 
-ARCH_DEP_CXXFLAGS += $(OE_ALL_FLAGS)
+ARCH_DEP_CXXFLAGS += $(ARCH_DEP_COMMONFLAGS)
 ARCH_DEP_CXXFLAGS += -pipe -feliminate-unused-debug-types
 ARCH_DEP_CXXFLAGS += -std=c++17
 
@@ -47,9 +47,6 @@ ARCH_DEP_LDFLAGS  += -Wl,--hash-style=gnu
 ARCH_DEP_LDFLAGS  += -Wl,--as-needed
 
 #####OECORE_NATIVE ?= x86_64-$(OE_TOOL_NAME)sdk-$(OE_TG_OS)
-
-# The default gnu architecture
-GNU_ARCH ?= x86_64
 
 # GNU_TARGET and GNU_DIR required
 # EPICS GNU_DIR is the same as
@@ -61,7 +58,7 @@ GNU_DIR = $(OE_SYS_ROOTS)/$(OECORE_NATIVE)/usr
 # EPICS Variable GNU_TARGET
 # is the same as TARGET_PREFIX in environment-setup*-linux
 # except the suffix "-"
-GNU_TARGET ?= $(GNU_ARCH)-$(OE_TOOL_NAME)-$(OE_TG_OS)
+GNU_TARGET ?= $(ARCH_CLASS)-$(OE_TOOL_NAME)-$(OE_TG_OS)
 
 # GNU_BIN is defined in CONFIG.gnuCommon as follows:
 # GNU_BIN = $(GNU_DIR)/bin
