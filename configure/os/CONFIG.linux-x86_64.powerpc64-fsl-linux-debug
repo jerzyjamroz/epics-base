@@ -1,7 +1,7 @@
 # Definitions for linux-x86_64 host - powerpc64-fsl-linux-debug target builds
 # Override these settings in CONFIG_SITE.linux-x86.powerpc64-fsl-linux-debug
 
-# Include definitions common to all oe-poky-linux-corei7-64 archs
+# Include definitions common to all powerpc64-fsl-linux
 -include $(CONFIG)/os/CONFIG_SITE.linux-x86_64.powerpc64-fsl-linux
 include $(CONFIG)/os/CONFIG.linux-x86_64.powerpc64-fsl-linux
 

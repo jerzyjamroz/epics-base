@@ -2,8 +2,8 @@
 # Override these settings in CONFIG_SITE.linux-x86.x86_64-poky-linux-debug
 
 # Include definitions common to all x86_64-poky-linux archs
--include $(CONFIG)/os/CONFIG_SITE.linux-x86_64.x86_64-poky-linux
 include $(CONFIG)/os/CONFIG.linux-x86_64.x86_64-poky-linux
+-include $(CONFIG)/os/CONFIG_SITE.linux-x86_64.x86_64-poky-linux
 
 CROSS_OPT = NO
 HOST_OPT = NO

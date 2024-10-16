@@ -8,12 +8,5 @@ include $(CONFIG)/CONFIG.oeCommon
 # -mfpmath=sse
 # enables use of XMM registers in floating point instructions (instead of stack in x87 mode)
 #
-# -msse4.2
-# Intel Streaming SIMD Extensions 4 (SSE4) introduces 54 new instructions
-# in Intel 64 processors made from 45 nm process technology.
-# The next generation 45nm processors is Nehalem
-#
-# Check export CC="" after *-gcc, the all flags should be TOOLCHAIN_CFLAG, which can be used
-# in ARCH_DEP_CPPFLAGS, ARCH_DEP_CFLAGS, ARCH_DEP_CXXFLAGS, ARCH_DEP_LDFLAGS
 
-ARCH_DEP_COMMONFLAGS += -mtune=generic -mfpmath=sse -march=nehalem -msse4.2
+ARCH_DEP_COMMONFLAGS += -mtune=generic -mfpmath=sse

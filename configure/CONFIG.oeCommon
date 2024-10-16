@@ -1,13 +1,13 @@
 # Open Embedded default definitions
 #--------------------------------------------------------------------
-#   author  : Jeong Han Lee
-#   update	: Joao Paulo Martins
-#						: Jerzy Jamroz
-#		date		: 13.10.2024
+#   originator  	: Jeong Han Lee
+#   refining			: Jerzy Jamroz
+#		verification 	: Joao Paulo Martins
+#		date					: 13.10.2024
 #--------------------------------------------------------------------
-# Define the following variables:
-## OECORE_TARGET_SYSROOT - Toolchain
-## OECORE_NATIVE_SYSROOT - SDK Toolchain
+# Define the site variables:
+## OECORE_TARGET_SYSROOT - Toolchain home directory
+## OECORE_NATIVE_SYSROOT - SDK Toolchain home directory
 
 unexport GCC_EXEC_PREFIX
 COMMANDLINE_LIBRARY ?= READLINE
@@ -35,10 +35,10 @@ GNU_DIR = $(OECORE_NATIVE_SYSROOT)/usr
 
 # If your crosscompiler name has a GNU target prefix like <gnutarget>-gcc,
 # e.g. *-gcc, put a GNU_TARGET definition in
-# EPICS Variable GNU_TARGET
-# is the same as TARGET_PREFIX in environment-setup*-linux except the suffix "-"
+# EPICS Variable GNU_TARGET is the same as TARGET_PREFIX in environment-setup*-linux except the suffix "-"
 # The parsing requires: oe-<target_architecture>-<toochain_name>-<target_os> == oe-<TARGET_PREFIX> without -
-GNU_TARGET ?= $(subst -debug,,$(subst oe-,,$(T_A)))
+# [NOTE] Define GNU_TARGET if T_A not equal
+GNU_TARGET ?= $(subst -debug,,$(T_A))
 
 # GNU_BIN is defined in CONFIG.gnuCommon as follows:
 # GNU_BIN = $(GNU_DIR)/bin
