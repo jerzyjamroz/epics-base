@@ -6,4 +6,3 @@
 include $(CONFIG)/os/CONFIG.linux-x86_64.powerpc64-fsl-linux
 
 CROSS_OPT = NO
-HOST_OPT = NO

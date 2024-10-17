@@ -1,18 +1,18 @@
+#*************************************************************************
 # Open Embedded default definitions
-#--------------------------------------------------------------------
+#*************************************************************************
 #   originator  	: Jeong Han Lee
 #   redesign			: Jerzy Jamroz
 #		verification 	: Joao Paulo Martins
 #		date					: 13.10.2024
-#--------------------------------------------------------------------
+#*************************************************************************
 # Define the site variables:
 ## OECORE_TARGET_SYSROOT - Toolchain home directory
 ## OECORE_NATIVE_SYSROOT - SDK Toolchain home directory
 ## GNU_TARGET - Define if T_A not equal GNU_TARGET
+#*************************************************************************
 
-unexport GCC_EXEC_PREFIX
-COMMANDLINE_LIBRARY ?= READLINE
-
+# Common flags to all C flags
 ARCH_DEP_COMMONFLAGS += --sysroot=$(OECORE_TARGET_SYSROOT)
 
 ARCH_DEP_CFLAGS   += $(ARCH_DEP_COMMONFLAGS)
@@ -25,7 +25,7 @@ ARCH_DEP_CXXFLAGS += -pipe -feliminate-unused-debug-types
 ARCH_DEP_CXXFLAGS += -std=c++17
 
 ARCH_DEP_LDFLAGS  += --sysroot=$(OECORE_TARGET_SYSROOT)
-ARCH_DEP_LDFLAGS  += -Wl,-O1
+ARCH_DEP_LDFLAGS  += -Wl,-O3
 ARCH_DEP_LDFLAGS  += -Wl,--hash-style=gnu
 ARCH_DEP_LDFLAGS  += -Wl,--as-needed
 
@@ -35,7 +35,7 @@ GNU_DIR = $(OECORE_NATIVE_SYSROOT)/usr
 
 # If your crosscompiler name has a GNU target prefix like <gnutarget>-gcc,
 # e.g. *-gcc, put a GNU_TARGET definition in EPICS Variable GNU_TARGET is the same as TARGET_PREFIX in environment-setup*-linux except the suffix "-"
-# The parsing requires: oe-<target_architecture>-<toochain_name>-<target_os> == oe-<TARGET_PREFIX> without -
+# The parsing requires: <target_architecture>-<toochain_name>-<target_os> == <TARGET_PREFIX> without -
 GNU_TARGET ?= $(subst -debug,,$(T_A))
 
 # GNU_BIN is defined in CONFIG.gnuCommon as follows:
@@ -51,10 +51,8 @@ GNU_BIN = $(GNU_DIR)/bin/$(GNU_TARGET)
 ## GNU_TARGET_INCLUDE_DIR = $(GNU_DIR)/include
 ## CROSS_INCLUDES =
 
-# Python home
+COMMANDLINE_LIBRARY ?= READLINE
+
+# PYTHONHOME
 OECORE_TARGET_PYTHONHOME ?= $(OECORE_TARGET_SYSROOT)/usr/bin
 OECORE_NATIVE_PYTHONHOME ?= $(OECORE_NATIVE_SYSROOT)/usr/bin
-
-# Allow site overrides
--include $(CONFIG)/CONFIG_SITE.oeCommon
--include $(CONFIG)/CONFIG_SITE.oeCommon.local
