@@ -1,13 +1,14 @@
 # Open Embedded default definitions
 #--------------------------------------------------------------------
 #   originator  	: Jeong Han Lee
-#   refining			: Jerzy Jamroz
+#   redesign			: Jerzy Jamroz
 #		verification 	: Joao Paulo Martins
 #		date					: 13.10.2024
 #--------------------------------------------------------------------
 # Define the site variables:
 ## OECORE_TARGET_SYSROOT - Toolchain home directory
 ## OECORE_NATIVE_SYSROOT - SDK Toolchain home directory
+## GNU_TARGET - Define if T_A not equal GNU_TARGET
 
 unexport GCC_EXEC_PREFIX
 COMMANDLINE_LIBRARY ?= READLINE
@@ -30,14 +31,11 @@ ARCH_DEP_LDFLAGS  += -Wl,--as-needed
 
 # GNU_TARGET and GNU_DIR required
 # EPICS GNU_DIR is the same as
-#
 GNU_DIR = $(OECORE_NATIVE_SYSROOT)/usr
 
 # If your crosscompiler name has a GNU target prefix like <gnutarget>-gcc,
-# e.g. *-gcc, put a GNU_TARGET definition in
-# EPICS Variable GNU_TARGET is the same as TARGET_PREFIX in environment-setup*-linux except the suffix "-"
+# e.g. *-gcc, put a GNU_TARGET definition in EPICS Variable GNU_TARGET is the same as TARGET_PREFIX in environment-setup*-linux except the suffix "-"
 # The parsing requires: oe-<target_architecture>-<toochain_name>-<target_os> == oe-<TARGET_PREFIX> without -
-# [NOTE] Define GNU_TARGET if T_A not equal
 GNU_TARGET ?= $(subst -debug,,$(T_A))
 
 # GNU_BIN is defined in CONFIG.gnuCommon as follows:
@@ -45,15 +43,15 @@ GNU_TARGET ?= $(subst -debug,,$(T_A))
 # However, toolchain has the GNU_TARGET after bin
 GNU_BIN = $(GNU_DIR)/bin/$(GNU_TARGET)
 
-# Managed by CONFIG.CrossCommon GNU_TARGET_INCLUDE_DIR = -I$(GNU_DIR)/include
-## CROSS_INCLUDES =
-
 # GNU_GARGET_LIB_DIR is defined in CONFIG.CrossCommon as follows:
 # GNU_TARGET_LIB_DIR = $(GNU_TARGET:%= $(GNU_DIR)/%/lib)
 # However, the toolchain han no GNU_TARGET after lib
-#
-GNU_TARGET_LIB_DIR = $(GNU_DIR)/lib
+# Managed by sysroots
+## GNU_TARGET_LIB_DIR = $(GNU_DIR)/lib
+## GNU_TARGET_INCLUDE_DIR = $(GNU_DIR)/include
+## CROSS_INCLUDES =
 
+# Python home
 OECORE_TARGET_PYTHONHOME ?= $(OECORE_TARGET_SYSROOT)/usr/bin
 OECORE_NATIVE_PYTHONHOME ?= $(OECORE_NATIVE_SYSROOT)/usr/bin
 
