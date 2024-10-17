@@ -2,7 +2,7 @@
 # Override these settings in CONFIG_SITE.linux-x86.x86_64-poky-linux
 
 include $(CONFIG)/os/CONFIG.Common.linux-x86_64
-# Include common open embedded compiler definitions
+# Include common open embedded definitions
 include $(CONFIG)/CONFIG.oeCommon
 
 # -mfpmath=sse
