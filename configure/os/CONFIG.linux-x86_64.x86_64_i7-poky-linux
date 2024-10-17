@@ -1,7 +1,7 @@
 # Definitions for linux-x86_64 host - x86_64_i7-poky-linux target builds
 # Override these settings in CONFIG_SITE.x86_64_i7-poky-linux
 
-# Include common open embedded compiler definitions
+# Include common open embedded definitions
 include $(CONFIG)/CONFIG.oeCommon
 include $(CONFIG)/os/CONFIG.linux-x86_64.x86_64-poky-linux
 -include $(CONFIG)/os/CONFIG_SITE.linux-x86_64.x86_64-poky-linux
@@ -14,7 +14,7 @@ GNU_TARGET = x86_64-poky-linux
 # in Intel 64 processors made from 45 nm process technology.
 # The next generation 45nm processors is Nehalem
 #
-# Check export CC="" after *-gcc, the all flags should be TOOLCHAIN_CFLAG, which can be used
+# Check export CC="" after *-gcc, the all flags should be toolchain flags, which can be used
 # in ARCH_DEP_CPPFLAGS, ARCH_DEP_CFLAGS, ARCH_DEP_CXXFLAGS, ARCH_DEP_LDFLAGS
 
 ARCH_DEP_COMMONFLAGS += -march=nehalem -msse4.2

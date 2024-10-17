@@ -6,4 +6,3 @@ include $(CONFIG)/os/CONFIG.linux-x86_64.x86_64_i7-poky-linux
 -include $(CONFIG)/os/CONFIG_SITE.linux-x86_64.x86_64_i7-poky-linux
 
 CROSS_OPT = NO
-HOST_OPT = NO
