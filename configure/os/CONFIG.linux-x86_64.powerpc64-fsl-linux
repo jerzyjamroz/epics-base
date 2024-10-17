@@ -5,4 +5,4 @@ include $(CONFIG)/os/CONFIG.Common.linux-ppc64
 # Include common open embedded compiler definitions
 include $(CONFIG)/CONFIG.oeCommon
 
-ARCH_DEP_COMMONFLAGS += -mhard-float -mcpu=e6500
+ARCH_DEP_COMMONFLAGS += -m64 -mhard-float -mcpu=e6500
