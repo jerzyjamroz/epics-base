@@ -12,6 +12,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+static const char* helpMessage =
+  "Usage: afterInit \"<command>\" (before iocInit)\n"
+  "Allows you to define commands to be run after the iocInit\n"
+  "Example commands:\n"
+  "  afterInit \"dbpf <PV> <VAL>\"\n"
+  "  afterInit \"date\"\n"
+  "Options:\n"
+  "  -h, --help : Show this help message and exit.\n";
+
 struct cmditem
 {
   struct cmditem* next;
@@ -29,7 +38,8 @@ static void afterInitHook(initHookState state)
   struct cmditem* next = NULL;
   while(item)
   {
-    printf("%s\n", item->cmd);
+    epicsStdoutPrintf("%s\n", item->cmd);
+
     if(iocshCmd(item->cmd))
       errlogPrintf("ERROR afterInit command '%s' failed to run\n", item->cmd);
 
@@ -65,15 +75,6 @@ static struct cmditem* newItem(char* cmd)
   return item;
 }
 
-static const char* helpMessage =
-  "Usage: afterInit \"<command>\" (before iocInit)\n"
-  "Allows you to define a boot sequence which overwrites autosave (hard-coded setup)\n"
-  "Example commands:\n"
-  "  afterInit \"dbpf <PV> <VAL>\"\n"
-  "  afterInit \"date\"\n"
-  "Options:\n"
-  "  -h, --help : Show this help message and exit.\n";
-
 static const iocshFuncDef afterInitDef = {
   "afterInit", 1,
   (const iocshArg*[]){
@@ -82,8 +83,6 @@ static const iocshFuncDef afterInitDef = {
 
 static void afterInitFunc(const iocshArgBuf* args)
 {
-  static int after_init_unregistered = 1;
-
   char* cmd = args[0].sval;
 
   // Check for help option
@@ -105,12 +104,6 @@ static void afterInitFunc(const iocshArgBuf* args)
     return;
   }
 
-  if(after_init_unregistered)
-  {
-    after_init_unregistered = 0;
-    initHookRegister(afterInitHook);
-  }
-
   struct cmditem* item = newItem(cmd);
 
   if(!item)
@@ -124,6 +117,11 @@ static void afterInitRegister(void)
   {
     after_init_unregistered = 0;
     iocshRegister(&afterInitDef, afterInitFunc);
+    if(initHookRegister(afterInitHook) < 0)
+    {
+      errno = ENOMEM;
+      errlogPrintf("ERROR initHookRegister memory allocation failure %s\n", strerror(errno));
+    }
   }
 }
 
