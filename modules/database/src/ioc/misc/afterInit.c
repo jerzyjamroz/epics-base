@@ -1,5 +1,5 @@
 /* Copyright (C) 2020 Dirk Zimoch */
-/* Copyright (C) 2020-2023 European Spallation Source, ERIC */
+/* Copyright (C) 2020-2024 European Spallation Source, ERIC */
 
 #include <dbAccess.h>
 #include <epicsExport.h>
@@ -12,23 +12,27 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct cmditem {
-  struct cmditem *next;
-  char *cmd;
+struct cmditem
+{
+  struct cmditem* next;
+  char* cmd;
 };
 
-struct cmditem *cmdlist, **cmdlast = &cmdlist;
+static struct cmditem *cmdlist, **cmdlast = &cmdlist;
 
-void afterInitHook(initHookState state) {
-  if (state != initHookAfterIocRunning) return;
+static void afterInitHook(initHookState state)
+{
+  if(state != initHookAfterIocRunning)
+    return;
 
-  struct cmditem *item = cmdlist;
-  struct cmditem *next = NULL;
-  while (item) {
+  struct cmditem* item = cmdlist;
+  struct cmditem* next = NULL;
+  while(item)
+  {
     printf("%s\n", item->cmd);
-    if (iocshCmd(item->cmd)) {
-      errlogPrintf("afterInit: Command '%s' failed to run\n", item->cmd);
-    };
+    if(iocshCmd(item->cmd))
+      errlogPrintf("ERROR afterInit command '%s' failed to run\n", item->cmd);
+
     next = item->next;
     free(item->cmd);
     free(item);
@@ -36,56 +40,91 @@ void afterInitHook(initHookState state) {
   }
 }
 
-static struct cmditem *newItem(char *cmd) {
-  struct cmditem *item;
-  item = malloc(sizeof(struct cmditem));
-  if (item == NULL) {
+static struct cmditem* newItem(char* cmd)
+{
+  struct cmditem* item = malloc(sizeof(struct cmditem));
+
+  if(item == NULL)
+  {
+    errno = ENOMEM;
     return NULL;
   }
-  item->cmd = epicsStrDup(cmd);
-  item->next = NULL;
 
+  item->cmd = epicsStrDup(cmd);
+
+  if(item->cmd == NULL)
+  {
+    free(item);
+    errno = ENOMEM;
+    return NULL;
+  }
+
+  item->next = NULL;
   *cmdlast = item;
   cmdlast = &item->next;
   return item;
 }
 
+static const char* helpMessage =
+  "Usage: afterInit \"<command>\" (before iocInit)\n"
+  "Allows you to define a boot sequence which overwrites autosave (hard-coded setup)\n"
+  "Example commands:\n"
+  "  afterInit \"dbpf <PV> <VAL>\"\n"
+  "  afterInit \"date\"\n"
+  "Options:\n"
+  "  -h, --help : Show this help message and exit.\n";
+
 static const iocshFuncDef afterInitDef = {
-    "afterInit", 1,
-    (const iocshArg *[]){
-        &(iocshArg){"commandline", iocshArgString},
-    }};
+  "afterInit", 1,
+  (const iocshArg*[]){
+    &(iocshArg){"commandline", iocshArgString},
+  }};
 
-static void afterInitFunc(const iocshArgBuf *args) {
-  static int first_time = 1;
-  char *cmd;
+static void afterInitFunc(const iocshArgBuf* args)
+{
+  static int after_init_unregistered = 1;
 
-  if (first_time) {
-    first_time = 0;
+  char* cmd = args[0].sval;
+
+  // Check for help option
+  if(cmd && (epicsStrCaseCmp(cmd, "--help") == 0 || epicsStrCaseCmp(cmd, "-h") == 0))
+  {
+    epicsStdoutPrintf("%s", helpMessage);
+    return;
+  }
+
+  if(!cmd || !cmd[0])
+  {
+    errlogPrintf("WARNING Usage: afterInit \"command\", check '-h' flag for help\n");
+    return;
+  }
+
+  if(interruptAccept)
+  {
+    errlogPrintf("WARNING afterInit can only be used before iocInit\n");
+    return;
+  }
+
+  if(after_init_unregistered)
+  {
+    after_init_unregistered = 0;
     initHookRegister(afterInitHook);
   }
-  if (interruptAccept) {
-    errlogPrintf("afterInit can only be used before iocInit\n");
-    return;
-  }
 
-  cmd = args[0].sval;
-  if (!cmd || !cmd[0]) {
-    errlogPrintf("Usage: afterInit \"command\"\n");
-    return;
-  }
-  struct cmditem *item = newItem(cmd);
+  struct cmditem* item = newItem(cmd);
 
-  if (!item)
-    errlogPrintf("afterInit: error adding command %s; %s", cmd,
-                 strerror(errno));
+  if(!item)
+    errlogPrintf("ERROR afterInit not adding command '%s' %s\n", cmd, strerror(errno));
 }
 
-static void afterInitRegister(void) {
-  static int firstTime = 1;
-  if (firstTime) {
-    firstTime = 0;
+static void afterInitRegister(void)
+{
+  static int after_init_unregistered = 1;
+  if(after_init_unregistered)
+  {
+    after_init_unregistered = 0;
     iocshRegister(&afterInitDef, afterInitFunc);
   }
 }
+
 epicsExportRegistrar(afterInitRegister);
