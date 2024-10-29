@@ -1,0 +1,93 @@
+# CONFIG.darwin-x86.Common
+#
+# Definitions for darwin-x86 host builds
+# Sites may override these definitions in CONFIG_SITE.darwin-x86.Common
+#-------------------------------------------------------
+#support for IPv6 etc.
+#Include definitions common to unix hosts
+include $(CONFIG)/os/CONFIG.UnixCommon.Common
+
+#Include definitions common to unix hosts
+#include $(CONFIG)/os/CONFIG.UnixCommon.Common
+#include $(CONFIG)/os/CONFIG.Common.linux-x86_64
+#unexport GCC_EXEC_PREFIX
+
+COMMANDLINE_LIBRARY ?= READLINE
+
+# CC_CLANG  = clang
+# CCC_CLANG = clang++
+# CMPLR_CLASS_CLANG = clang
+
+# CMPLR_CLASS = gcc
+# CC          = /usr/local/bin/gcc
+# CCC         = /usr/local/bin/g++
+
+# AR = clang -rc
+# LD = clang -r
+# CPP = $(CC) -x c -E
+
+# CMPLR_CLASS = gcc
+# CC          = gcc-14
+# CCC         = g++-14
+
+#CMPLR_CLASS = gcc
+#CC          = /usr/local/Cellar/gcc/14.2.0_1/bin/x86_64-apple-darwin24-gcc-14
+#CCC         = /usr/local/Cellar/gcc/14.2.0_1/bin/x86_64-apple-darwin24-g++-14
+
+# [EXTRA]      build  = x86_64-apple-darwin24.0.0
+# [EXTRA]      host   = x86_64-apple-darwin24.0.0
+# [EXTRA]      target = x86_64-unknown-linux-gnu
+
+TARGET_SYSROOT = /Users/jerzy/linux/ubuntu/sysroot
+#NATIVE_SYSROOT = /usr/local/Cellar/crosstool-ng/1.26.0
+#NATIVE_SYSROOT = /usr/local/Cellar/gcc/14.2.0_1
+NATIVE_SYSROOT = /usr/local/Cellar/x86_64-unknown-linux-gnu/13.3.0.reinstall
+GNU_TARGET = x86_64-unknown-linux-gnu
+#GNU_TARGET = x86_64-apple-darwin24
+#CMPLR_SUFFIX := -14
+
+ARCH_DEP_COMMONFLAGS += -mtune=generic -I$(TARGET_SYSROOT)/usr/include -I$(TARGET_SYSROOT)/usr/include/x86_64-linux-gnu
+
+# Common flags to all C flags
+ARCH_DEP_COMMONFLAGS += --sysroot=$(TARGET_SYSROOT)
+
+ARCH_DEP_CFLAGS   += $(ARCH_DEP_COMMONFLAGS)
+ARCH_DEP_CFLAGS   += -pipe -feliminate-unused-debug-types
+
+ARCH_DEP_CPPFLAGS += $(ARCH_DEP_COMMONFLAGS)
+
+ARCH_DEP_CXXFLAGS += $(ARCH_DEP_COMMONFLAGS)
+ARCH_DEP_CXXFLAGS += -pipe -feliminate-unused-debug-types
+ARCH_DEP_CXXFLAGS += -std=c++17
+
+ARCH_DEP_LDFLAGS += --sysroot=$(TARGET_SYSROOT)
+ARCH_DEP_LDFLAGS += -L$(TARGET_SYSROOT)/usr/lib -L$(TARGET_SYSROOT)/lib -L$(TARGET_SYSROOT)/lib64
+ARCH_DEP_LDFLAGS += -L$(TARGET_SYSROOT)/usr/lib/x86_64-linux-gnu
+ARCH_DEP_LDFLAGS += -Wl,-O1
+ARCH_DEP_LDFLAGS += -Wl,--hash-style=gnu
+ARCH_DEP_LDFLAGS += -Wl,--as-needed
+ARCH_DEP_LDFLAGS += -Wl,--verbose
+
+
+
+# GNU_TARGET and GNU_DIR required
+# EPICS GNU_DIR is the same as
+GNU_DIR = $(NATIVE_SYSROOT)
+
+# If your crosscompiler name has a GNU target prefix like <gnutarget>-gcc,
+# e.g. *-gcc, put a GNU_TARGET definition in EPICS Variable GNU_TARGET is the same as TARGET_PREFIX in environment-setup*-linux except the suffix "-"
+# The parsing requires: <target_architecture>-<toochain_name>-<target_os> == <TARGET_PREFIX> without -
+#GNU_TARGET ?= $(subst -debug,,$(T_A))
+
+# GNU_BIN is defined in CONFIG.gnuCommon as follows:
+# GNU_BIN = $(GNU_DIR)/bin
+# However, toolchain has the GNU_TARGET after bin
+# GNU_BIN = $(GNU_DIR)/bin/$(GNU_TARGET)
+
+# GNU_GARGET_LIB_DIR is defined in CONFIG.CrossCommon as follows:
+# GNU_TARGET_LIB_DIR = $(GNU_TARGET:%= $(GNU_DIR)/%/lib)
+# However, the toolchain han no GNU_TARGET after lib
+# Managed by sysroots
+## GNU_TARGET_LIB_DIR = $(GNU_DIR)/lib
+## GNU_TARGET_INCLUDE_DIR = $(GNU_DIR)/include
+## CROSS_INCLUDES =
