@@ -1,0 +1,19 @@
+# CONFIG_SITE.darwin-x86.linux-x86_64
+#
+# Site specific definitions for darwin-x86 host - linux-x86_64 target builds
+#-------------------------------------------------------
+
+# Default
+#GNU_DIR := /usr/local/opt/x86_64-unknown-linux-gnu/toolchain
+# Development
+GNU_DIR = /Users/jerzy/opt/toolchain/x86_64-unknown-linux-gnu/toolchain
+
+# Default
+#GNU_TARGET = x86_64-linux-gnu
+
+# Development
+#CMPLR_SUFFIX := -14
+
+# Expand ARCH DEPENDENT flags for your target
+#ARCH_DEP_COMMONFLAGS += -mtune=corei7
+#ARCH_DEP_LDFLAGS += -Wl,--verbose
