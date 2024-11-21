@@ -10,4 +10,4 @@ include $(CONFIG)/os/CONFIG.linux-x86_64.x86_64-poky-linux
 GNU_TARGET = x86_64-poky-linux
 
 # Targets the Haswell (or later) Intel i7 processors with avx2
-ARCH_DEP_COMMONFLAGS += -march=core-avx2 -mtune=core-avx2 -O3 -mavx2 -mfma -funroll-loops -ffast-math -flto -falign-functions=32 -fopenmp
+ARCH_DEP_CPPFLAGS += -march=core-avx2 -mtune=core-avx2 -O3 -mavx2 -mfma -funroll-loops -ffast-math -flto -falign-functions=32 -fopenmp

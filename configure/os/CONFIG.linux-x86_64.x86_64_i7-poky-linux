@@ -17,4 +17,4 @@ GNU_TARGET = x86_64-poky-linux
 # Check export CC="" after *-gcc, the all flags should be toolchain flags, which can be used
 # in ARCH_DEP_CPPFLAGS, ARCH_DEP_CFLAGS, ARCH_DEP_CXXFLAGS, ARCH_DEP_LDFLAGS
 
-ARCH_DEP_COMMONFLAGS += -march=nehalem -msse4.2
+ARCH_DEP_CPPFLAGS += -march=nehalem -msse4.2
