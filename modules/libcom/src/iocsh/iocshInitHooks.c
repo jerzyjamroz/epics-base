@@ -24,7 +24,7 @@ struct cmditem {
 static ELLLIST s_cmdlist = ELLLIST_INIT;
 static int s_initendflag = 0; // Defines the end of the initialization
 
-static void univHook(const initHookState State)
+static void atInitHook(const initHookState State)
 {
     // Handle only specific hooks, ignore not relevant
     if (State != initHookAtBeginning &&
@@ -57,7 +57,7 @@ static void univHook(const initHookState State)
 
 static struct cmditem *cmdItemAdd(const initHookState Hook, const char *pCmd)
 {
-    size_t cmd_len = strlen(pCmd) + 1;
+    const size_t cmd_len = strlen(pCmd) + 1;
 
     struct cmditem *item = mallocMustSucceed(sizeof(struct cmditem) + cmd_len,
                                              ERL_ERROR " iocshInitHooks: "
@@ -71,11 +71,10 @@ static struct cmditem *cmdItemAdd(const initHookState Hook, const char *pCmd)
     return item;
 }
 
-typedef void (*IfaceWrapper)(const char *);
-
-static void univIface(const iocshArgBuf *pArgs, const IfaceWrapper fIfaceWrapper)
+static void atInitHookFunc(const iocshArgBuf *pArgs)
 {
-    char *cmd = pArgs[0].sval;
+    const char *const hook = pArgs[0].sval;
+    const char *const cmd = pArgs[1].sval;
 
     if (s_initendflag) {
         printf(ERL_WARNING " iocshInitHooks: "
@@ -83,78 +82,51 @@ static void univIface(const iocshArgBuf *pArgs, const IfaceWrapper fIfaceWrapper
         return;
     }
 
-    if (!cmd || !cmd[0]) {
+    if (!hook || !hook[0]) {
         printf(ERL_WARNING " iocshInitHooks: "
-                           "received an empty argument\n");
+                           "received an empty 'hook' argument\n");
         return;
     }
 
-    fIfaceWrapper(cmd);
+    if (!cmd || !cmd[0]) {
+        printf(ERL_WARNING " iocshInitHooks: "
+                           "received an empty 'command' argument\n");
+        return;
+    }
+
+    if (strcmp(hook, "beginning") == 0)
+        cmdItemAdd(initHookAtBeginning, cmd);
+    else if (strcmp(hook, "running") == 0)
+        cmdItemAdd(initHookAfterIocRunning, cmd);
+    else if (strcmp(hook, "shutdown") == 0)
+        cmdItemAdd(initHookAtShutdown, cmd);
+    else
+        printf(ERL_ERROR " iocshInitHooks: "
+                         "hook '%s' is not supported\n",
+               hook);
 }
 
-// initHookAfterIocRunning (atInit) declaration
+static const iocshFuncDef atInitHookDef = {
+    "atHook",
+    2,
+    (const iocshArg *[]){
+        &(iocshArg){"<hook:{beginning|running|shutdown}>", iocshArgString},
+        &(iocshArg){"<command>", iocshArgString}},
+    "Allows you to define commands to be run at the specific hook\n"
+    "hook 'beginning' is triggered at initHookAtBeginning\n"
+    "hook 'running' is triggered at initHookAfterIocRunning\n"
+    "hook 'shutdown' is triggered at initHookAtShutdown\n"
+    "Example commands:\n"
+    "  atHook running \"dbpf <PV> <VAL>\"\n"
+    "  atHook shutdown \"date\"\n"};
 
-static const iocshFuncDef atInitDef = {
-    "atInit",
-    1,
-    (const iocshArg *[]){&(iocshArg){"command", iocshArgString}},
-    "Triggered at initHookAfterIocRunning"};
-
-static void atInitWrapper(const char *pCmd)
-{
-    cmdItemAdd(initHookAfterIocRunning, pCmd);
-}
-
-static void atInitFunc(const iocshArgBuf *pArgs)
-{
-    univIface(pArgs, atInitWrapper);
-}
-
-// initHookAtShutdown (atShut) declaration
-
-static const iocshFuncDef atShutDef = {
-    "atShut",
-    1,
-    (const iocshArg *[]){&(iocshArg){"command", iocshArgString}},
-    "Triggered at initHookAtShutdown"};
-
-static void atShutWrapper(const char *pCmd)
-{
-    cmdItemAdd(initHookAtShutdown, pCmd);
-}
-
-static void atShutFunc(const iocshArgBuf *pArgs)
-{
-    univIface(pArgs, atShutWrapper);
-}
-
-// initHookAtBeginning (atBegin) declaration
-
-static const iocshFuncDef atBeginDef = {
-    "atBegin",
-    1,
-    (const iocshArg *[]){&(iocshArg){"command", iocshArgString}},
-    "Triggered at initHookAtBeginning"};
-
-static void atBeginWrapper(const char *pCmd)
-{
-    cmdItemAdd(initHookAtBeginning, pCmd);
-}
-
-static void atBeginFunc(const iocshArgBuf *pArgs)
-{
-    univIface(pArgs, atBeginWrapper);
-}
-
-// Initialiaze all iocshInitHooks
+// Initialiaze
 void iocshInitHooksRegister(void)
 {
     static int first_time = 1;
     if (first_time) {
         first_time = 0;
-        iocshRegister(&atBeginDef, atBeginFunc);
-        iocshRegister(&atInitDef, atInitFunc);
-        iocshRegister(&atShutDef, atShutFunc);
-        initHookRegister(univHook);
+        iocshRegister(&atInitHookDef, atInitHookFunc);
+        initHookRegister(atInitHook);
     }
 }
