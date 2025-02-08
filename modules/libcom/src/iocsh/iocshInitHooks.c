@@ -15,110 +15,120 @@
 
 #include "iocshInitHooks.h"
 
+// The registered/supported iocsh hooks
+static const struct {
+    const char *name;
+    initHookState state;
+} initHooksRegistry[] = {
+    {"beginning", initHookAtBeginning},
+    {"running", initHookAfterIocRunning},
+    {"shutdown", initHookAtShutdown}};
+
+static const iocshFuncDef iocshInitHookDef = {
+    "atHook",
+    2,
+    (const iocshArg *[]){
+        &(iocshArg){"<hook:{beginning|running|shutdown}>", iocshArgString},
+        &(iocshArg){"<command>", iocshArgString}},
+    "Allows you to define commands to be run at the specific hook:\n"
+    "  hook 'beginning' is triggered after iocInit and before autosave\n"
+    "  hook 'running' is triggered after iocInit and after autosave\n"
+    "  hook 'shutdown' is triggered at the IOC shutdown\n"
+    "Example commands:\n"
+    "  atHook running \"dbpf <PV> <VAL>\"\n"
+    "  atHook shutdown \"date\"\n"};
+
 struct cmditem {
     ELLNODE node;
     initHookState hook;
     char *cmd;
 };
 
-static ELLLIST s_cmdlist = ELLLIST_INIT;
-static int s_initendflag = 0; // Defines the end of the initialization
+static ELLLIST cmdList = ELLLIST_INIT;
+static int initEndFlag = 0; // Defines the end of the initialization
 
-static void atInitHook(const initHookState State)
+static void iocshInitHook(const initHookState HookState)
 {
-    // Handle only specific hooks, ignore not relevant
-    if (State != initHookAtBeginning &&
-        State != initHookAfterIocRunning &&
-        State != initHookAtShutdown) {
-        return;
+    if (HookState == initHookAfterIocRunning)
+        initEndFlag = 1;
+
+    // Validate the defined hooks only
+    const char *valid_hook_name = NULL;
+    for (size_t i = 0; i < sizeof(initHooksRegistry) / sizeof(initHooksRegistry[0]); i++) {
+        if (initHooksRegistry[i].state == HookState) {
+            valid_hook_name = initHooksRegistry[i].name;
+            break;
+        }
     }
+    if (valid_hook_name == NULL) return;
 
-    if (State == initHookAfterIocRunning)
-        s_initendflag = 1;
-
-    struct cmditem *item = (struct cmditem *)ellFirst(&s_cmdlist);
-
+    const struct cmditem *item = (struct cmditem *)ellFirst(&cmdList);
     while (item) {
-        struct cmditem *item_next = (struct cmditem *)ellNext(&item->node);
-        if (State == item->hook) {
-            printf("%s\n", item->cmd);
+        const struct cmditem *item_next = (struct cmditem *)ellNext(&item->node);
+        if (HookState == item->hook) {
+            printf(ANSI_GREEN("iocshInitHooks %s: ") "%s\n",
+                   valid_hook_name, item->cmd);
 
             if (iocshCmd(item->cmd))
-                printf(ERL_ERROR " iocshInitHooks: "
-                                 "command '%s' failed to run for the init hook %d\n",
-                       item->cmd, (int)item->hook);
+                printf(ERL_ERROR " iocshInitHooks %s: "
+                                 "command '%s' failed to run\n",
+                       valid_hook_name, item->cmd);
 
-            ellDelete(&s_cmdlist, &item->node);
+            ellDelete(&cmdList, &item->node);
             free(item);
         }
         item = item_next;
     }
 }
 
-static struct cmditem *cmdItemAdd(const initHookState Hook, const char *pCmd)
+static struct cmditem *cmdItemAdd(const initHookState HookState, const char *pCmd)
 {
     const size_t cmd_len = strlen(pCmd) + 1;
 
-    struct cmditem *item = mallocMustSucceed(sizeof(struct cmditem) + cmd_len,
-                                             ERL_ERROR " iocshInitHooks: "
-                                                       "failed to allocate memory for cmditem\n");
-    item->hook = Hook;
+    struct cmditem *item = mallocMustSucceed(sizeof(struct cmditem) + cmd_len, "iocshInitHooks");
+    item->hook = HookState;
     item->cmd = (char *)(item + 1);
-    strncpy(item->cmd, pCmd, cmd_len);
+    memcpy(item->cmd, pCmd, cmd_len);
 
-    ellAdd(&s_cmdlist, &item->node);
+    ellAdd(&cmdList, &item->node);
 
     return item;
 }
 
-static void atInitHookFunc(const iocshArgBuf *pArgs)
+static void iocshInitHookFunc(const iocshArgBuf *pArgs)
 {
     const char *const hook = pArgs[0].sval;
     const char *const cmd = pArgs[1].sval;
 
-    if (s_initendflag) {
+    if (initEndFlag) {
         printf(ERL_WARNING " iocshInitHooks: "
                            "can only be used before iocInit\n");
         return;
     }
 
     if (!hook || !hook[0]) {
-        printf(ERL_WARNING " iocshInitHooks: "
-                           "received an empty 'hook' argument\n");
+        printf(ERL_ERROR " iocshInitHooks: "
+                         "received an empty 'hook' argument\n");
         return;
     }
 
     if (!cmd || !cmd[0]) {
-        printf(ERL_WARNING " iocshInitHooks: "
-                           "received an empty 'command' argument\n");
+        printf(ERL_ERROR " iocshInitHooks: "
+                         "received an empty 'command' argument\n");
         return;
     }
 
-    if (strcmp(hook, "beginning") == 0)
-        cmdItemAdd(initHookAtBeginning, cmd);
-    else if (strcmp(hook, "running") == 0)
-        cmdItemAdd(initHookAfterIocRunning, cmd);
-    else if (strcmp(hook, "shutdown") == 0)
-        cmdItemAdd(initHookAtShutdown, cmd);
-    else
-        printf(ERL_ERROR " iocshInitHooks: "
-                         "hook '%s' is not supported\n",
-               hook);
-}
+    for (size_t i = 0; i < sizeof(initHooksRegistry) / sizeof(initHooksRegistry[0]); i++) {
+        if (strcmp(hook, initHooksRegistry[i].name) == 0) {
+            cmdItemAdd(initHooksRegistry[i].state, cmd);
+            return;
+        }
+    }
 
-static const iocshFuncDef atInitHookDef = {
-    "atHook",
-    2,
-    (const iocshArg *[]){
-        &(iocshArg){"<hook:{beginning|running|shutdown}>", iocshArgString},
-        &(iocshArg){"<command>", iocshArgString}},
-    "Allows you to define commands to be run at the specific hook\n"
-    "hook 'beginning' is triggered at initHookAtBeginning\n"
-    "hook 'running' is triggered at initHookAfterIocRunning\n"
-    "hook 'shutdown' is triggered at initHookAtShutdown\n"
-    "Example commands:\n"
-    "  atHook running \"dbpf <PV> <VAL>\"\n"
-    "  atHook shutdown \"date\"\n"};
+    printf(ERL_ERROR " iocshInitHooks: "
+                     " hook '%s' is not supported\n",
+           hook);
+}
 
 // Initialiaze
 void iocshInitHooksRegister(void)
@@ -126,7 +136,7 @@ void iocshInitHooksRegister(void)
     static int first_time = 1;
     if (first_time) {
         first_time = 0;
-        iocshRegister(&atInitHookDef, atInitHookFunc);
-        initHookRegister(atInitHook);
+        iocshRegister(&iocshInitHookDef, iocshInitHookFunc);
+        initHookRegister(iocshInitHook);
     }
 }
