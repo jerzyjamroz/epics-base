@@ -20,8 +20,8 @@
 static const struct {
     const char *name;
     initHookState state;
-} initHooksRegistry[] = {
-    {"beginning", initHookAtBeginning},
+} iocshInitHooksRegistry[] = {
+    {"init", initHookAfterInitDatabase},
     {"running", initHookAfterIocRunning},
     {"shutdown", initHookAtShutdown}};
 
@@ -29,10 +29,10 @@ static const iocshFuncDef iocshInitHookDef = {
     "atHook",
     2,
     (const iocshArg *[]){
-        &(iocshArg){"<hook:{beginning|running|shutdown}>", iocshArgString},
+        &(iocshArg){"<hook:{init|running|shutdown}>", iocshArgString},
         &(iocshArg){"<command>", iocshArgString}},
     "Allows you to define commands to be run at the specific hook:\n"
-    "  hook 'beginning' is triggered after iocInit and before autosave\n"
+    "  hook 'init' is triggered after iocInit and before autosave\n"
     "  hook 'running' is triggered after iocInit and after autosave\n"
     "  hook 'shutdown' is triggered at the IOC shutdown\n"
     "Example commands:\n"
@@ -58,9 +58,9 @@ static void iocshInitHook(const initHookState HookState)
         initEndFlag = 1;
 
     // Validate the defined hooks only
-    for (i = 0; i < sizeof(initHooksRegistry) / sizeof(initHooksRegistry[0]); i++) {
-        if (initHooksRegistry[i].state == HookState) {
-            valid_hook_name = initHooksRegistry[i].name;
+    for (i = 0; i < sizeof(iocshInitHooksRegistry) / sizeof(iocshInitHooksRegistry[0]); i++) {
+        if (iocshInitHooksRegistry[i].state == HookState) {
+            valid_hook_name = iocshInitHooksRegistry[i].name;
             break;
         }
     }
@@ -123,9 +123,9 @@ static void iocshInitHookFunc(const iocshArgBuf *pArgs)
         return;
     }
 
-    for (i = 0; i < sizeof(initHooksRegistry) / sizeof(initHooksRegistry[0]); i++) {
-        if (strcmp(hook, initHooksRegistry[i].name) == 0) {
-            cmdItemAdd(initHooksRegistry[i].state, cmd);
+    for (i = 0; i < sizeof(iocshInitHooksRegistry) / sizeof(iocshInitHooksRegistry[0]); i++) {
+        if (strcmp(hook, iocshInitHooksRegistry[i].name) == 0) {
+            cmdItemAdd(iocshInitHooksRegistry[i].state, cmd);
             return;
         }
     }
