@@ -12,6 +12,7 @@
 #include <initHooks.h>
 #include <iocsh.h>
 #include <string.h>
+#include <epicsTypes.h>
 
 #include "iocshInitHooks.h"
 
@@ -49,12 +50,15 @@ static int initEndFlag = 0; // Defines the end of the initialization
 
 static void iocshInitHook(const initHookState HookState)
 {
+    const char *valid_hook_name = NULL;
+    struct cmditem *item = NULL, *item_next = NULL;
+    size_t i = 0;
+
     if (HookState == initHookAfterIocRunning)
         initEndFlag = 1;
 
     // Validate the defined hooks only
-    const char *valid_hook_name = NULL;
-    for (size_t i = 0; i < sizeof(initHooksRegistry) / sizeof(initHooksRegistry[0]); i++) {
+    for (i = 0; i < sizeof(initHooksRegistry) / sizeof(initHooksRegistry[0]); i++) {
         if (initHooksRegistry[i].state == HookState) {
             valid_hook_name = initHooksRegistry[i].name;
             break;
@@ -62,9 +66,9 @@ static void iocshInitHook(const initHookState HookState)
     }
     if (valid_hook_name == NULL) return;
 
-    const struct cmditem *item = (struct cmditem *)ellFirst(&cmdList);
+    item = (struct cmditem *)ellFirst(&cmdList);
     while (item) {
-        const struct cmditem *item_next = (struct cmditem *)ellNext(&item->node);
+        item_next = (struct cmditem *)ellNext(&item->node);
         if (HookState == item->hook) {
             printf(ANSI_GREEN("iocshInitHooks %s: ") "%s\n",
                    valid_hook_name, item->cmd);
@@ -83,7 +87,7 @@ static void iocshInitHook(const initHookState HookState)
 
 static struct cmditem *cmdItemAdd(const initHookState HookState, const char *pCmd)
 {
-    const size_t cmd_len = strlen(pCmd) + 1;
+    const size_t cmd_len = strnlen(pCmd, MAX_STRING_SIZE - 1) + 1;
 
     struct cmditem *item = mallocMustSucceed(sizeof(struct cmditem) + cmd_len, "iocshInitHooks");
     item->hook = HookState;
@@ -99,6 +103,7 @@ static void iocshInitHookFunc(const iocshArgBuf *pArgs)
 {
     const char *const hook = pArgs[0].sval;
     const char *const cmd = pArgs[1].sval;
+    size_t i = 0;
 
     if (initEndFlag) {
         printf(ERL_WARNING " iocshInitHooks: "
@@ -118,7 +123,7 @@ static void iocshInitHookFunc(const iocshArgBuf *pArgs)
         return;
     }
 
-    for (size_t i = 0; i < sizeof(initHooksRegistry) / sizeof(initHooksRegistry[0]); i++) {
+    for (i = 0; i < sizeof(initHooksRegistry) / sizeof(initHooksRegistry[0]); i++) {
         if (strcmp(hook, initHooksRegistry[i].name) == 0) {
             cmdItemAdd(initHooksRegistry[i].state, cmd);
             return;
