@@ -25,12 +25,13 @@ static const struct {
     {"running", initHookAfterIocRunning},
     {"shutdown", initHookAtShutdown}};
 
+static const iocshArg iocshInitHookArg0 = {"<hook:{init|running|shutdown}>", iocshArgString};
+static const iocshArg iocshInitHookArg1 = {"<command>", iocshArgString};
+static const iocshArg *const iocshInitHookArgs[] = {&iocshInitHookArg0, &iocshInitHookArg1};
 static const iocshFuncDef iocshInitHookDef = {
     "atHook",
     2,
-    (const iocshArg *[]){
-        &(iocshArg){"<hook:{init|running|shutdown}>", iocshArgString},
-        &(iocshArg){"<command>", iocshArgString}},
+    iocshInitHookArgs,
     "Allows you to define commands to be run at the specific hook:\n"
     "  hook 'init' is triggered after iocInit and before autosave\n"
     "  hook 'running' is triggered after iocInit and after autosave\n"
