@@ -24,6 +24,8 @@
 #include <ctype.h>
 #include <errno.h>
 
+#include <csignal>
+
 #define EPICS_PRIVATE_API
 
 #include "epicsMath.h"
@@ -771,7 +773,7 @@ const iocshVarDef * epicsStdCall iocshFindVariable(const char *name)
 /*
  * Free storage created by iocshRegister/iocshRegisterVariable
  */
-void epicsStdCall iocshFree(void) 
+void epicsStdCall iocshFree(void)
 {
     struct iocshCommand *pc;
     struct iocshVariable *pv;
@@ -794,8 +796,8 @@ void epicsStdCall iocshFree(void)
 
 /*
  * Parse argument input based on the arg type specified.
- * It is worth noting that depending on type this argument may 
- * be defaulted if a value is not specified. For example, a 
+ * It is worth noting that depending on type this argument may
+ * be defaulted if a value is not specified. For example, a
  * double/int with no value will default to 0 which may allow
  * you to add optional arguments to the end of your argument list.
  */
@@ -943,7 +945,7 @@ static void helpCallFunc(const iocshArgBuf *args)
                 if (epicsStrGlobMatch(piocshFuncDef->name, argv[iarg]) != 0) {
 
                     if (! firstFunction) {
-                        fprintf(epicsGetStdout(), 
+                        fprintf(epicsGetStdout(),
                             ANSI_UNDERLINE("                                                            ")
                             "\n");
                     }
@@ -965,7 +967,7 @@ static void helpCallFunc(const iocshArgBuf *args)
                     if(piocshFuncDef->usage) {
                         fprintf(epicsGetStdout(), "\n%s", piocshFuncDef->usage);
                     }
-                    
+
                     firstFunction = false;
                 }
 
@@ -1587,6 +1589,12 @@ static void exitCallFunc(const iocshArgBuf *)
 {
 }
 
+// Signal handler function
+void handle_sigterm(int signum)
+{
+    // Empty on purpose
+}
+
 static void iocshOnce (void *)
 {
     iocshTableMutex = epicsMutexMustCreate ();
@@ -1600,6 +1608,7 @@ static void iocshOnce (void *)
     iocshRegisterImpl(&iocshRunFuncDef,iocshRunCallFunc);
     iocshRegisterImpl(&onFuncDef, onCallFunc);
     iocshTableUnlock();
+    std::signal(SIGTERM, handle_sigterm);
 }
 
 static void iocshInit (void)
