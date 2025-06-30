@@ -1590,9 +1590,19 @@ static void exitCallFunc(const iocshArgBuf *)
 }
 
 // Signal handler function
-void handle_sigterm(int signum)
+static void sigtermHandler(int signum)
 {
     // Empty on purpose
+}
+
+static void sigtermHandlerSetup()
+{
+    struct sigaction sa;
+    sa.sa_handler = sigtermHandler;
+    sigemptyset(&sa.sa_mask);
+    // https://www.gnu.org/software/libc/manual/html_node/Flags-for-Sigaction.html
+    sa.sa_flags = 0; // clear SA_RESTART to close epicsReadline() on signal
+    sigaction(SIGTERM, &sa, NULL);
 }
 
 static void iocshOnce (void *)
@@ -1608,7 +1618,7 @@ static void iocshOnce (void *)
     iocshRegisterImpl(&iocshRunFuncDef,iocshRunCallFunc);
     iocshRegisterImpl(&onFuncDef, onCallFunc);
     iocshTableUnlock();
-    std::signal(SIGTERM, handle_sigterm);
+    sigtermHandlerSetup();
 }
 
 static void iocshInit (void)
