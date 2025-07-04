@@ -6,3 +6,5 @@ include $(CONFIG)/os/CONFIG.Common.linux-fsl-ppc64e6500
 -include $(CONFIG)/os/CONFIG.Common.linux-fsl-ppc64e6500
 
 CROSS_OPT = NO
+
+YOCTO_PERF_DIS = YES
