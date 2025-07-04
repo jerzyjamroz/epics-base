@@ -15,11 +15,4 @@ include $(CONFIG)/os/CONFIG.Common.linux-poky-x86_64
 OECORE_TARGET_SYSROOT = $(OECORE_SYSROOT)/corei7-64-poky-linux
 
 # Targets the skylake Intel processors
-ARCH_DEP_CPPFLAGS += -march=skylake -mtune=skylake -O3 -funroll-loops -ffast-math -falign-functions=32 -fopenmp
-
-# Extra pefrormance boost
-ARCH_DEP_CPPFLAGS += -fomit-frame-pointer -fprefetch-loop-arrays -falign-loops=32
-
-# Link Time Optimization
-ARCH_DEP_CPPFLAGS += -flto
-ARCH_DEP_LDFLAGS += -Wl,-flto
+ARCH_DEP_CPPFLAGS += -march=skylake -mtune=skylake
