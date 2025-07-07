@@ -42,16 +42,15 @@ ARCH_DEP_LDFLAGS += -Wl,-z,relro -Wl,-z,now
 ARCH_DEP_LDFLAGS += -Wl,--gc-sections
 ARCH_DEP_LDFLAGS += -Wl,--sort-common
 
-# Use YOCTO_PERF_DIS to disable additional performance flags
-YOCTO_PERF_DIS ?=
-ifeq ($(YOCTO_PERF_DIS),)
-ARCH_DEP_CPPFLAGS += -O3 -funroll-loops -ffast-math -falign-functions=32 -fopenmp
-# Extra pefrormance boost
-ARCH_DEP_CPPFLAGS += -fomit-frame-pointer -fprefetch-loop-arrays -falign-loops=32
-# Link Time Optimization
-ARCH_DEP_CPPFLAGS += -flto
-ARCH_DEP_LDFLAGS += -Wl,-flto
-endif
+# Optional performance flags
+YOCTO_PERF_CPPFLAGS ?= -O3 -funroll-loops -ffast-math -falign-functions=32 -fopenmp \
+										-fomit-frame-pointer -fprefetch-loop-arrays -falign-loops=32 \
+										-flto
+
+YOCTO_PERF_LDFLAGS 	?= -Wl,-flto
+
+ARCH_DEP_CPPFLAGS += $(YOCTO_PERF_CPPFLAGS)
+ARCH_DEP_LDFLAGS 	+= $(YOCTO_PERF_LDFLAGS)
 
 # Add site specific configurations
 -include $(CONFIG)/os/CONFIG_SITE.yoctoCommon.Common

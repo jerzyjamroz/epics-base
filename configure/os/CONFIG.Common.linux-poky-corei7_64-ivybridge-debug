@@ -7,4 +7,6 @@ include $(CONFIG)/os/CONFIG.Common.linux-poky-corei7_64-ivybridge
 
 CROSS_OPT = NO
 
-YOCTO_PERF_DIS = YES
+# Disable the performance flags
+YOCTO_PERF_CPPFLAGS :=
+YOCTO_PERF_LDFLAGS :=
