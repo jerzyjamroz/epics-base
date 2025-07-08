@@ -12,20 +12,11 @@ GNU_TARGET ?= x86_64-linux-gnu
 
 COMMANDLINE_LIBRARY ?= READLINE
 
-ARCH_DEP_COMMONFLAGS += -mtune=generic
-
-ARCH_DEP_CFLAGS   += $(ARCH_DEP_COMMONFLAGS)
-ARCH_DEP_CFLAGS   += -pipe -feliminate-unused-debug-types
-
-ARCH_DEP_CPPFLAGS += $(ARCH_DEP_COMMONFLAGS)
-
-ARCH_DEP_CXXFLAGS += $(ARCH_DEP_COMMONFLAGS)
-ARCH_DEP_CXXFLAGS += -pipe -feliminate-unused-debug-types
+ARCH_DEP_CPPFLAGS += -pipe
 ARCH_DEP_CXXFLAGS += -std=c++17
 
-ARCH_DEP_LDFLAGS += -Wl,-O1
-ARCH_DEP_LDFLAGS += -Wl,--hash-style=gnu
 ARCH_DEP_LDFLAGS += -Wl,--as-needed
+ARCH_DEP_LDFLAGS += -Wl,--hash-style=gnu
 
 # Optional debug information
 # ARCH_DEP_LDFLAGS += -Wl,--verbose
