@@ -1,13 +1,10 @@
 # CONFIG.darwin-x86.linux-x86_64
 #
 # Definitions for darwin-x86 host - linux-x86_64 target builds
-# Sites may override these definitions in CONFIG_SITE.darwin-x86.Common
+# Sites may override these definitions in CONFIG_SITE
 #-------------------------------------------------------
 
-#Include definitions common to unix hosts
-#include $(CONFIG)/os/CONFIG.UnixCommon.Common
 include $(CONFIG)/os/CONFIG.Common.linux-x86_64
-#unexport GCC_EXEC_PREFIX
 
 GNU_DIR ?= /usr/local/opt/x86_64-unknown-linux-gnu/toolchain
 GNU_TARGET ?= x86_64-linux-gnu
@@ -29,4 +26,6 @@ ARCH_DEP_CXXFLAGS += -std=c++17
 ARCH_DEP_LDFLAGS += -Wl,-O1
 ARCH_DEP_LDFLAGS += -Wl,--hash-style=gnu
 ARCH_DEP_LDFLAGS += -Wl,--as-needed
+
+# Optional debug information
 # ARCH_DEP_LDFLAGS += -Wl,--verbose
