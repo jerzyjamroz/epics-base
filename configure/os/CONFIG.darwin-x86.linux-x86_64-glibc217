@@ -1,0 +1,10 @@
+# CONFIG.darwin-x86.linux-x86_64-glibc217
+#------------------------------------------------------------------------------
+# Definitions for darwin-x86 host - linux-x86_64-glibc217 target builds
+# Sites may override these definitions in CONFIG_SITE
+#------------------------------------------------------------------------------
+
+include $(CONFIG)/os/CONFIG.Common.linux-x86_64
+include $(CONFIG)/os/CONFIG.darwinCommon.linux-x86_64
+
+GNU_DIR := /Users/jerzy/linux/c7/toolchain

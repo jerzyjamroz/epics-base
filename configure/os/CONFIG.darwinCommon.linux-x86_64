@@ -1,0 +1,44 @@
+# CONFIG.darwinCommon.linux-x86_64
+#------------------------------------------------------------------------------
+# Definitions for darwinCommon host - linux-x86_64 target builds
+# Sites may override these definitions in CONFIG_SITE
+#------------------------------------------------------------------------------
+# To make this configuration work "out of the box", you need to install
+# the Linux cross toolchain using Homebrew:
+#
+#       brew tap messense/macos-cross-toolchains
+#       brew install x86_64-unknown-linux-gnu
+#
+# Author:
+#   Jerzy Jamróz, 2024
+#
+#------------------------------------------------------------------------------
+# Other useful configuration options:
+#
+# Tune generated code for a specific CPU:
+## ARCH_DEP_CPPFLAGS += -mtune=corei7
+#
+# Enable verbose linker output for debugging:
+## ARCH_DEP_LDFLAGS += -Wl,--verbose
+
+include $(CONFIG)/os/CONFIG.Common.linux-x86_64
+
+HOMEBREW_DIR := $(shell brew --prefix 2>/dev/null)
+
+GNU_DIR = $(HOMEBREW_DIR)/opt/x86_64-unknown-linux-gnu/toolchain
+GNU_TARGET = x86_64-unknown-linux-gnu
+
+COMMANDLINE_LIBRARY ?= READLINE
+
+ARCH_DEP_LDFLAGS += -Wl,--as-needed
+ARCH_DEP_LDFLAGS += -Wl,--hash-style=gnu
+
+ARCH_DEP_LDFLAGS += -static-libstdc++ -static-libgcc
+LINKER_USE_RPATH = ORIGIN
+
+ifneq ($(strip $(EPICS_BASE)),)
+LINKER_ORIGIN_ROOT = $(EPICS_BASE)
+endif
+
+# Allow site overrides
+-include $(CONFIG)/os/CONFIG_SITE.darwinCommon.linux-x86_64
