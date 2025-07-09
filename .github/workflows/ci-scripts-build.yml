@@ -197,9 +197,9 @@ jobs:
 
           - os: macos-latest
             cmp: gcc
-            configuration: default
+            configuration: static
             name: "Cross macOS x86_64-linux-gnu"
-            cross: darwin-aarch64@linux-x86_64
+            cross: linux-x86_64
 
     steps:
     - uses: actions/checkout@v4
