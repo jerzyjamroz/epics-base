@@ -1,0 +1,14 @@
+
+#INSTALL_LOCATION := /Users/jerzy/opt/epics/base-7.0.8.2
+#INSTALL_LOCATION := /Users/jerzy/opt/epics-vanilla/base-7.0.8.2.1
+INSTALL_LOCATION := $(PWD)/build
+
+CROSS_COMPILER_TARGET_ARCHS = linux-x86_64
+
+# GNU_DIR := /Users/jerzy/opt/toolchain/x86_64-unknown-linux-gnu/toolchain
+#GNU_DIR := /Users/jerzy/opt/toolchain/x86_64-unknown-linux-gnu/toolchain
+
+#GNU_DIR := /usr/local/opt/x86_64-unknown-linux-gnu/toolchain
+
+# ARCH_DEP_COMMONFLAGS += -mtune=corei7
+# ARCH_DEP_LDFLAGS += -Wl,--verbose

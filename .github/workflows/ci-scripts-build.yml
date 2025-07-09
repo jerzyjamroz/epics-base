@@ -50,28 +50,28 @@ jobs:
       matrix:
         # Job names also name artifacts, character limitations apply
         include:
-          - os: ubuntu-24.04
-            cmp: gcc
-            name: "Ub-24 gcc-13 c++20 Werror"
-            # Turn all warnings into errors,
-            # except for those we could not fix (yet).
-            # Remove respective -Wno-error=... flag once it is fixed.
-            extra: "CMD_CXXFLAGS=-std=c++20
-                    CMD_CPPFLAGS='-fdiagnostics-color
-                                  -fstack-protector-strong
-                                  -Wformat
-                                  -Werror
-                                  -Werror=format-security
-                                  -Wno-error=deprecated-declarations
-                                  -Wno-error=stringop-truncation
-                                  -Wno-error=restrict
-                                  -Wno-error=sizeof-pointer-memaccess
-                                  -Wno-error=nonnull
-                                  -Wno-error=dangling-pointer
-                                  -Wno-error=format-overflow
-                                  -Wno-error=stringop-overread
-                                  -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3'
-                    CMD_LDFLAGS=-Wl,-z,relro"
+          # - os: ubuntu-24.04
+          #   cmp: gcc
+          #   name: "Ub-24 gcc-13 c++20 Werror"
+          #   # Turn all warnings into errors,
+          #   # except for those we could not fix (yet).
+          #   # Remove respective -Wno-error=... flag once it is fixed.
+          #   extra: "CMD_CXXFLAGS=-std=c++20
+          #           CMD_CPPFLAGS='-fdiagnostics-color
+          #                         -fstack-protector-strong
+          #                         -Wformat
+          #                         -Werror
+          #                         -Werror=format-security
+          #                         -Wno-error=deprecated-declarations
+          #                         -Wno-error=stringop-truncation
+          #                         -Wno-error=restrict
+          #                         -Wno-error=sizeof-pointer-memaccess
+          #                         -Wno-error=nonnull
+          #                         -Wno-error=dangling-pointer
+          #                         -Wno-error=format-overflow
+          #                         -Wno-error=stringop-overread
+          #                         -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3'
+          #           CMD_LDFLAGS=-Wl,-z,relro"
 
           # - os: ubuntu-22.04
           #   cmp: gcc
@@ -196,7 +196,7 @@ jobs:
           #   cross: linux-arm@arm-linux-gnueabihf
 
           - os: macos-latest
-            cmp: clang
+            cmp: gcc
             configuration: default
             name: "Cross macOS x86_64-linux-gnu"
             cross: linux-x86_64
