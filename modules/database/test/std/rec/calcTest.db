@@ -1,0 +1,19 @@
+record(ao, "srcA") {
+}
+
+record(ao, "srcB") {
+}
+
+record(calc, "calc") {
+    field(SCAN, "Passive")
+    field(INPA, "srcA")
+    field(INPB, "srcB")
+    field(CALC, "A")
+}
+
+record(calcout, "calcout") {
+    field(SCAN, "Passive")
+    field(INPA, "srcA")
+    field(INPB, "srcB")
+    field(CALC, "A")
+}
