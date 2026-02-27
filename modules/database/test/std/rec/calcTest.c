@@ -14,15 +14,15 @@
 #include "epicsMath.h"
 #include "epicsStdlib.h"
 
-#ifdef __rtems__
-static long long raw_llround(double x)
-{
-    return (x >= 0.0)
-        ? (long long)floor(x + 0.5)
-        : -(long long)floor(-x + 0.5);
-}
-#define llround raw_llround
-#endif
+// #ifdef __rtems__
+// static long long raw_llround(double x)
+// {
+//     return (x >= 0.0)
+//         ? (long long)floor(x + 0.5)
+//         : -(long long)floor(-x + 0.5);
+// }
+// #define llround raw_llround
+// #endif
 
 void recTestIoc_registerRecordDeviceDriver(struct dbBase *);
 
